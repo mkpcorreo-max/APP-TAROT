@@ -6,23 +6,6 @@
   <title>Tarot Thoth — Aleister Crowley & Lady Frieda Harris</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .card-flip {
-      perspective: 1000px;
-    }
-    .card-inner {
-      transition: transform 0.6s;
-      transform-style: preserve-3d;
-    }
-    .card-flip.flipped .card-inner {
-      transform: rotateY(180deg);
-    }
-    .card-front, .card-back {
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-    }
-    .card-back {
-      transform: rotateY(180deg);
-    }
     .gold-gradient-text {
       background: linear-gradient(135deg, #fef08a 0%, #d97706 50%, #fef08a 100%);
       -webkit-background-clip: text;
@@ -72,17 +55,15 @@
   <!-- Contenido Principal -->
   <main class="max-w-6xl mx-auto p-4 sm:p-6 flex-1 w-full flex flex-col justify-center">
 
-    <!-- Vista 1: Explorador (Carta a Carta) -->
+    <!-- Vista 1: Explorador -->
     <div id="view-gallery" class="flex flex-col items-center space-y-6">
       
-      <!-- Selector y Navegación -->
       <div class="flex flex-wrap items-center justify-center gap-3 bg-slate-900/60 p-2.5 rounded-2xl border border-slate-800/80 w-full max-w-2xl">
         <button onclick="prevCard()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-amber-400 transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
         </button>
         
         <select id="card-select" onchange="selectCard(this.value)" class="bg-slate-950 text-slate-200 font-mono text-xs sm:text-sm px-4 py-2 rounded-xl border border-slate-700 focus:outline-none focus:border-amber-500 flex-1 max-w-xs cursor-pointer">
-          <!-- Opciones dinámicas -->
         </select>
 
         <button onclick="nextCard()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-amber-400 transition">
@@ -90,15 +71,12 @@
         </button>
       </div>
 
-      <!-- Ficha de la Carta -->
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6 bg-slate-900/40 border border-slate-800 p-6 rounded-3xl w-full max-w-4xl shadow-2xl backdrop-blur-sm">
         
-        <!-- Imagen -->
         <div class="md:col-span-5 flex flex-col items-center justify-center p-2 bg-slate-950/60 rounded-2xl border border-slate-800/60 min-h-[380px]">
-          <img id="card-img" src="" alt="Carta Thoth" referrerpolicy="no-referrer" class="max-h-[380px] w-auto object-contain rounded-xl shadow-2xl transition-all duration-300">
+          <img id="card-img" src="" alt="Carta Thoth" class="max-h-[380px] w-auto object-contain rounded-xl shadow-2xl transition-all duration-300">
         </div>
 
-        <!-- Detalles Esotéricos -->
         <div class="md:col-span-7 flex flex-col justify-between space-y-4">
           <div>
             <div class="flex justify-between items-start">
@@ -110,7 +88,6 @@
               <span id="card-hebrew" class="text-xl font-bold font-serif text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-xl"></span>
             </div>
 
-            <!-- Fórmulas y Correspondencias -->
             <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-slate-800 text-xs">
               <div class="bg-slate-950/80 p-2.5 rounded-xl border border-slate-800/80">
                 <span class="text-slate-500 block text-[10px] uppercase tracking-wider font-semibold">Astrología</span>
@@ -126,7 +103,6 @@
               </div>
             </div>
 
-            <!-- Explicación Simbólica -->
             <div class="mt-4 space-y-2">
               <span class="text-xs text-amber-400 font-semibold tracking-wider uppercase block">Simbolismo & Clave Alquímica</span>
               <p id="card-symbol" class="text-xs sm:text-sm text-slate-300 leading-relaxed custom-scrollbar max-h-48 overflow-y-auto pr-1 bg-slate-950/40 p-3 rounded-xl border border-slate-800/40"></p>
@@ -134,7 +110,7 @@
           </div>
 
           <div class="text-[11px] font-mono text-slate-500 text-right">
-            Desliza o usa las flechas del teclado para navegar
+            Navega usando las flechas o el selector
           </div>
         </div>
       </div>
@@ -152,49 +128,42 @@
       </div>
 
       <div id="draw-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl pt-2">
-        <!-- Generado dinámicamente -->
       </div>
     </div>
 
     <!-- Vista 3: Galería completa -->
     <div id="view-grid" class="hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full">
-      <!-- Generado dinámicamente -->
     </div>
 
   </main>
 
-  <!-- Script con el Dataset y Lógica -->
   <script>
     const thothDeck = [
-      { id: "0", name: "0. The Fool", alias: "El Loco", letter: "Aleph (א)", astro: "Aire Primordial", path: "11ª Senda: Kether → Chokmah", alchemy: "El Cero y la Caos", symbol: "El impulso creador original en estado puro. Representa la inocencia del espíritu antes de la manifestación, la libertad absoluta y el salto al abismo cósmico.", img: "https://upload.wikimedia.org/wikipedia/en/8/82/Thoth_Fool.jpg" },
-      { id: "I", name: "I. The Magus", alias: "El Mago", letter: "Beth (ב)", astro: "Mercurio", path: "12ª Senda: Kether → Binah", alchemy: "Mercurio Filosofal", symbol: "La transmisión de la voluntad divina a través de la mente y la palabra. El Mago maneja los cuatro instrumentos elementales en un malabarismo cósmico.", img: "https://upload.wikimedia.org/wikipedia/en/2/2f/Thoth_Magus.jpg" },
-      { id: "II", name: "II. The Priestess", alias: "La Sacerdotisa", letter: "Gimel (ג)", astro: "Luna", path: "13ª Senda: Kether → Tiphareth", alchemy: "Agua Celestial", symbol: "La intuición receptiva y la memoria oculta tras el velo de Isis. Sostiene el cristal del conocimiento universal y conecta lo supremo con el corazón.", img: "https://upload.wikimedia.org/wikipedia/en/9/91/Thoth_Priestess.jpg" },
-      { id: "III", name: "III. The Empress", alias: "La Emperatriz", letter: "Daleth (ד)", astro: "Venus", path: "14ª Senda: Chokmah → Binah", alchemy: "Sal de la Tierra", symbol: "La matriz de la naturaleza, el amor incondicional y la abundancia orgánica. Puerta de entrada para la materialización del espíritu.", img: "https://upload.wikimedia.org/wikipedia/en/d/dc/Thoth_Empress.jpg" },
-      { id: "IV", name: "IV. The Emperor", alias: "El Emperador", letter: "Tzaddi (צ)", astro: "Aries", path: "15ª Senda: Chokmah → Tiphareth", alchemy: "Sulphur / Ordenamiento", symbol: "El poder ejecutivo y la estructura. Sentado en su trono rodeado de cabezas de carnero, ejerce el orden firme y la ley de la razón creadora.", img: "https://upload.wikimedia.org/wikipedia/en/c/c8/Thoth_Emperor.jpg" },
-      { id: "V", name: "V. The Hierophant", alias: "El Hierofante", letter: "Vau (ו)", astro: "Tauro", path: "16ª Senda: Chokmah → Chesed", alchemy: "Tierra Fija", symbol: "El maestro iniciador del Nuevo Eón. Representa la sabiduría oculta revelada, la unión de lo terrenal y lo divino bajo la clave del Pentagrama.", img: "https://upload.wikimedia.org/wikipedia/en/0/07/Thoth_Hierophant.jpg" },
-      { id: "VI", name: "VI. The Lovers", alias: "Los Enamorados", letter: "Zain (ז)", astro: "Géminis", path: "17ª Senda: Binah → Tiphareth", alchemy: "Matrimonio Alquímico", symbol: "La integración de los opuestos (Rey Rojo y Reina Blanca) bendecida por el Ermitaño. La espada del discernimiento divide para luego unificar.", img: "https://upload.wikimedia.org/wikipedia/en/1/11/Thoth_Lovers.jpg" },
-      { id: "VII", name: "VII. The Chariot", alias: "El Carro", letter: "Cheth (ח)", astro: "Cáncer", path: "18ª Senda: Binah → Geburah", alchemy: "Contención de la Luz", symbol: "El triunfo de la voluntad centrada. El guerrero dorado en armadura sostiene el Santo Grial mientras es guiado por cuatro esfinges misteriosas.", img: "https://upload.wikimedia.org/wikipedia/en/b/bd/Thoth_Chariot.jpg" },
-      { id: "VIII", name: "VIII. Adjustment", alias: "El Ajuste (Justicia)", letter: "Lamed (ל)", astro: "Libra", path: "22ª Senda: Geburah → Tiphareth", alchemy: "Equilibrio Dinámico", symbol: "Sustituye a La Justicia tradicional. Representa la naturaleza buscando continuamente su equilibrio dinámico y la perfecta simetría de la realidad.", img: "https://upload.wikimedia.org/wikipedia/en/1/1a/Thoth_Adjustment.jpg" },
-      { id: "IX", name: "IX. The Hermit", alias: "El Ermitaño", letter: "Yod (י)", astro: "Virgo", path: "20ª Senda: Chesed → Tiphareth", alchemy: "Fuego Secreto", symbol: "El portador de la lámpara que contiene el huevo filosófico. Guía solitario que ilumina la oscuridad con la semilla del conocimiento interno.", img: "https://upload.wikimedia.org/wikipedia/en/f/f6/Thoth_Hermit.jpg" },
-      { id: "X", name: "X. Fortune", alias: "La Fortuna", letter: "Kaph (כ)", astro: "Júpiter", path: "21ª Senda: Chesed → Netzach", alchemy: "Ciclos Alquímicos", symbol: "La rueda del destino girable impulsada por las tres fuerzas de la naturaleza (Sattva, Rajas, Tamas) bajo la atenta mirada de la Esfinge.", img: "https://upload.wikimedia.org/wikipedia/en/e/e4/Thoth_Fortune.jpg" },
-      { id: "XI", name: "XI. Lust", alias: "El Deseo / La Pasión", letter: "Teth (ט)", astro: "Leo", path: "19ª Senda: Chesed → Geburah", alchemy: "Fuego Vital", symbol: "Sustituye a La Fuerza. Muestra a la mujer divina ebria de éxtasis cabalgando sobre la bestia de siete cabezas, encarnando la energía creadora indomable.", img: "https://upload.wikimedia.org/wikipedia/en/f/f4/Thoth_Lust.jpg" },
-      { id: "XII", name: "XII. The Hanged Man", alias: "El Colgado", letter: "Mem (מ)", astro: "Agua Primordial", path: "23ª Senda: Geburah → Hod", alchemy: "Dissolutio", symbol: "La suspensión consciente del ego y el sacrificio iniciático. Colgado de la serpiente de la sabiduría para alcanzar la transmutación espiritual.", img: "https://upload.wikimedia.org/wikipedia/en/c/c9/Thoth_Hanged_Man.jpg" },
-      { id: "XIII", name: "XIII. Death", alias: "La Muerte", letter: "Nun (נ)", astro: "Escorpio", path: "24ª Senda: Tiphareth → Netzach", alchemy: "Putrefactio / Transmutación", symbol: "El esqueleto con la guadaña danzando en el fondo del mar de la materia. Disolución radical necesaria para la resurrección de una forma superior.", img: "https://upload.wikimedia.org/wikipedia/en/f/f2/Thoth_Death.jpg" },
-      { id: "XIV", name: "XIV. Art", alias: "El Arte (La Templanza)", letter: "Samekh (ס)", astro: "Sagitario", path: "25ª Senda: Tiphareth → Yesod", alchemy: "Solve et Coagula", symbol: "La gran mezcla de los elementos en el atanor alquímico. La figura andrógina funde el fuego y el agua para destilar la Piedra Filosofal.", img: "https://upload.wikimedia.org/wikipedia/en/a/a2/Thoth_Art.jpg" },
-      { id: "XV", name: "XV. The Devil", alias: "El Diablo", letter: "Ayin (ע)", astro: "Capricornio", path: "26ª Senda: Tiphareth → Hod", alchemy: "Materia Prima", symbol: "El macho cabrío de Mendes con el tercer ojo abierto en la frente. Representa el poder de la luz espiritual oculta en las capas de la materia denso.", img: "https://upload.wikimedia.org/wikipedia/en/a/a6/Thoth_Devil.jpg" },
-      { id: "XVI", name: "XVI. The Tower", alias: "La Torre", letter: "Peh (פ)", astro: "Marte", path: "27ª Senda: Netzach → Hod", alchemy: "Fuego Purgador", symbol: "La destrucción de la fortaleza del orgullo egoico por el rayo de la verdad. Las estructuras ilusorias caen para dejar al descubierto la realidad pura.", img: "https://upload.wikimedia.org/wikipedia/en/0/09/Thoth_Tower.jpg" },
-      { id: "XVII", name: "XVII. The Star", alias: "La Estrella", letter: "Heh (ה)", astro: "Acuario", path: "28ª Senda: Netzach → Yesod", alchemy: "Elixir de Vida", symbol: "La diosa Nuit derramando las aguas celestiales de la inspiración sobre la mente y la tierra. Esperanza pura y conexión directa con el cosmos.", img: "https://upload.wikimedia.org/wikipedia/en/c/ca/Thoth_Star.jpg" },
-      { id: "XVIII", name: "XVIII. The Moon", alias: "La Luna", letter: "Qoph (ק)", astro: "Piscis", path: "29ª Senda: Netzach → Malkuth", alchemy: "Noche Oscura del Alma", symbol: "El umbral de la ilusión guardado por Anubis. Travesía por las profundidades del subconsciente antes de acceder a la luz del amanecer.", img: "https://upload.wikimedia.org/wikipedia/en/f/f1/Thoth_Moon.jpg" },
-      { id: "XIX", name: "XIX. The Sun", alias: "El Sol", letter: "Resh (ר)", astro: "Sol", path: "30ª Senda: Hod → Yesod", alchemy: "Gold / Iluminación", symbol: "El triunfo radiante de la conciencia. Dos niños alados danzan rodeados por el zodiaco bajo los rayos vivificantes del astro rey.", img: "https://upload.wikimedia.org/wikipedia/en/4/4e/Thoth_Sun.jpg" },
-      { id: "XX", name: "XX. The Aeon", alias: "El Eón (El Juicio)", letter: "Shin (ש)", astro: "Fuego Primordial", path: "31ª Senda: Hod → Malkuth", alchemy: "Nuevo Comienzo", symbol: "Reemplaza al Juicio Final. Representa la llegada de la era de Horus, la superación del tiempo lineal y el despertar de la conciencia del ser.", img: "https://upload.wikimedia.org/wikipedia/en/b/b3/Thoth_Aeon.jpg" },
-      { id: "XXI", name: "XXI. The Universe", alias: "El Universo (El Mundo)", letter: "Tau (ת)", astro: "Saturno / Tierra", path: "32ª Senda: Yesod → Malkuth", alchemy: "Consumación / Gran Obra", symbol: "La doncella solar danzando en el centro del cosmos rodeada por el ciervo y los cuatro seres vivientes. La Gran Obra completada con éxito.", img: "https://upload.wikimedia.org/wikipedia/en/2/23/Thoth_Universe.jpg" }
+      { id: "0", name: "0. The Fool", alias: "El Loco", letter: "Aleph (א)", astro: "Aire Primordial", path: "11ª Senda: Kether → Chokmah", alchemy: "El Cero y la Caos", symbol: "El impulso creador original en estado puro. Representa la inocencia del espíritu antes de la manifestación, la libertad absoluta y el salto al abismo cósmico.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/8/82/Thoth_Fool.jpg&output=jpg" },
+      { id: "I", name: "I. The Magus", alias: "El Mago", letter: "Beth (ב)", astro: "Mercurio", path: "12ª Senda: Kether → Binah", alchemy: "Mercurio Filosofal", symbol: "La transmisión de la voluntad divina a través de la mente y la palabra. El Mago maneja los cuatro instrumentos elementales en un malabarismo cósmico.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/2/2f/Thoth_Magus.jpg&output=jpg" },
+      { id: "II", name: "II. The Priestess", alias: "La Sacerdotisa", letter: "Gimel (ג)", astro: "Luna", path: "13ª Senda: Kether → Tiphareth", alchemy: "Agua Celestial", symbol: "La intuición receptiva y la memoria oculta tras el velo de Isis. Sostiene el cristal del conocimiento universal y conecta lo supremo con el corazón.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/9/91/Thoth_Priestess.jpg&output=jpg" },
+      { id: "III", name: "III. The Empress", alias: "La Emperatriz", letter: "Daleth (ד)", astro: "Venus", path: "14ª Senda: Chokmah → Binah", alchemy: "Sal de la Tierra", symbol: "La matriz de la naturaleza, el amor incondicional y la abundancia orgánica. Puerta de entrada para la materialización del espíritu.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/d/dc/Thoth_Empress.jpg&output=jpg" },
+      { id: "IV", name: "IV. The Emperor", alias: "El Emperador", letter: "Tzaddi (צ)", astro: "Aries", path: "15ª Senda: Chokmah → Tiphareth", alchemy: "Sulphur / Ordenamiento", symbol: "El poder ejecutivo y la estructura. Sentado en su trono rodeado de cabezas de carnero, ejerce el orden firme y la ley de la razón creadora.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/c/c8/Thoth_Emperor.jpg&output=jpg" },
+      { id: "V", name: "V. The Hierophant", alias: "El Hierofante", letter: "Vau (ו)", astro: "Tauro", path: "16ª Senda: Chokmah → Chesed", alchemy: "Tierra Fija", symbol: "El maestro iniciador del Nuevo Eón. Representa la sabiduría oculta revelada, la unión de lo terrenal y lo divino bajo la clave del Pentagrama.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/0/07/Thoth_Hierophant.jpg&output=jpg" },
+      { id: "VI", name: "VI. The Lovers", alias: "Los Enamorados", letter: "Zain (ז)", astro: "Géminis", path: "17ª Senda: Binah → Tiphareth", alchemy: "Matrimonio Alquímico", symbol: "La integración de los opuestos (Rey Rojo y Reina Blanca) bendecida por el Ermitaño. La espada del discernimiento divide para luego unificar.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/1/11/Thoth_Lovers.jpg&output=jpg" },
+      { id: "VII", name: "VII. The Chariot", alias: "El Carro", letter: "Cheth (ח)", astro: "Cáncer", path: "18ª Senda: Binah → Geburah", alchemy: "Contención de la Luz", symbol: "El triunfo de la voluntad centrada. El guerrero dorado en armadura sostiene el Santo Grial mientras es guiado por cuatro esfinges misteriosas.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/b/bd/Thoth_Chariot.jpg&output=jpg" },
+      { id: "VIII", name: "VIII. Adjustment", alias: "El Ajuste (Justicia)", letter: "Lamed (ל)", astro: "Libra", path: "22ª Senda: Geburah → Tiphareth", alchemy: "Equilibrio Dinámico", symbol: "Sustituye a La Justicia tradicional. Representa la naturaleza buscando continuamente su equilibrio dinámico y la perfecta simetría de la realidad.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/1/1a/Thoth_Adjustment.jpg&output=jpg" },
+      { id: "IX", name: "IX. The Hermit", alias: "El Ermitaño", letter: "Yod (י)", astro: "Virgo", path: "20ª Senda: Chesed → Tiphareth", alchemy: "Fuego Secreto", symbol: "El portador de la lámpara que contiene el huevo filosófico. Guía solitario que ilumina la oscuridad con la semilla del conocimiento interno.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/f/f6/Thoth_Hermit.jpg&output=jpg" },
+      { id: "X", name: "X. Fortune", alias: "La Fortuna", letter: "Kaph (כ)", astro: "Júpiter", path: "21ª Senda: Chesed → Netzach", alchemy: "Ciclos Alquímicos", symbol: "La rueda del destino impulsada por las tres fuerzas de la naturaleza (Sattva, Rajas, Tamas) bajo la atenta mirada de la Esfinge.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/e/e4/Thoth_Fortune.jpg&output=jpg" },
+      { id: "XI", name: "XI. Lust", alias: "El Deseo / La Pasión", letter: "Teth (ט)", astro: "Leo", path: "19ª Senda: Chesed → Geburah", alchemy: "Fuego Vital", symbol: "Sustituye a La Fuerza. Muestra a la mujer divina ebria de éxtasis cabalgando sobre la bestia de siete cabezas, encarnando la energía creadora indomable.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/f/f4/Thoth_Lust.jpg&output=jpg" },
+      { id: "XII", name: "XII. The Hanged Man", alias: "El Colgado", letter: "Mem (מ)", astro: "Agua Primordial", path: "23ª Senda: Geburah → Hod", alchemy: "Dissolutio", symbol: "La suspensión consciente del ego y el sacrificio iniciático. Colgado de la serpiente de la sabiduría para alcanzar la transmutación espiritual.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/c/c9/Thoth_Hanged_Man.jpg&output=jpg" },
+      { id: "XIII", name: "XIII. Death", alias: "La Muerte", letter: "Nun (נ)", astro: "Escorpio", path: "24ª Senda: Tiphareth → Netzach", alchemy: "Putrefactio / Transmutación", symbol: "El esqueleto con la guadaña danzando en el fondo del mar de la materia. Disolución radical necesaria para la resurrección de una forma superior.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/f/f2/Thoth_Death.jpg&output=jpg" },
+      { id: "XIV", name: "XIV. Art", alias: "El Arte (La Templanza)", letter: "Samekh (ס)", astro: "Sagitario", path: "25ª Senda: Tiphareth → Yesod", alchemy: "Solve et Coagula", symbol: "La gran mezcla de los elementos en el atanor alquímico. La figura andrógina funde el fuego y el agua para destilar la Piedra Filosofal.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/a/a2/Thoth_Art.jpg&output=jpg" },
+      { id: "XV", name: "XV. The Devil", alias: "El Diablo", letter: "Ayin (ע)", astro: "Capricornio", path: "26ª Senda: Tiphareth → Hod", alchemy: "Materia Prima", symbol: "El macho cabrío de Mendes con el tercer ojo abierto en la frente. Representa el poder de la luz espiritual oculta en las capas de la materia denso.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/a/a6/Thoth_Devil.jpg&output=jpg" },
+      { id: "XVI", name: "XVI. The Tower", alias: "La Torre", letter: "Peh (פ)", astro: "Marte", path: "27ª Senda: Netzach → Hod", alchemy: "Fuego Purgador", symbol: "La destrucción de la fortaleza del orgullo egoico por el rayo de la verdad. Las estructuras ilusorias caen para dejar al descubierto la realidad pura.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/0/09/Thoth_Tower.jpg&output=jpg" },
+      { id: "XVII", name: "XVII. The Star", alias: "La Estrella", letter: "Heh (ה)", astro: "Acuario", path: "28ª Senda: Netzach → Yesod", alchemy: "Elixir de Vida", symbol: "La diosa Nuit derramando las aguas celestiales de la inspiración sobre la mente y la tierra. Esperanza pura y conexión directa con el cosmos.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/c/ca/Thoth_Star.jpg&output=jpg" },
+      { id: "XVIII", name: "XVIII. The Moon", alias: "La Luna", letter: "Qoph (ק)", astro: "Piscis", path: "29ª Senda: Netzach → Malkuth", alchemy: "Noche Oscura del Alma", symbol: "El umbral de la ilusión guardado por Anubis. Travesía por las profundidades del subconsciente antes de acceder a la luz del amanecer.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/f/f1/Thoth_Moon.jpg&output=jpg" },
+      { id: "XIX", name: "XIX. The Sun", alias: "El Sol", letter: "Resh (ר)", astro: "Sol", path: "30ª Senda: Hod → Yesod", alchemy: "Gold / Iluminación", symbol: "El triunfo radiante de la conciencia. Dos niños alados danzan rodeados por el zodiaco bajo los rayos vivificantes del astro rey.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/4/4e/Thoth_Sun.jpg&output=jpg" },
+      { id: "XX", name: "XX. The Aeon", alias: "El Eón (El Juicio)", letter: "Shin (ש)", astro: "Fuego Primordial", path: "31ª Senda: Hod → Malkuth", alchemy: "Nuevo Comienzo", symbol: "Reemplaza al Juicio Final. Representa la llegada de la era de Horus, la superación del tiempo lineal y el despertar de la conciencia del ser.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/b/b3/Thoth_Aeon.jpg&output=jpg" },
+      { id: "XXI", name: "XXI. The Universe", alias: "El Universo (El Mundo)", letter: "Tau (ת)", astro: "Saturno / Tierra", path: "32ª Senda: Yesod → Malkuth", alchemy: "Consumación / Gran Obra", symbol: "La doncella solar danzando en el centro del cosmos rodeada por el ciervo y los cuatro seres vivientes. La Gran Obra completada con éxito.", img: "https://wsrv.nl/?url=https://upload.wikimedia.org/wikipedia/en/2/23/Thoth_Universe.jpg&output=jpg" }
     ];
 
     let currentIndex = 0;
-
-    function getProxiedUrl(url) {
-      return `https://images.weserv.nl/?url=${encodeURIComponent(url)}`;
-    }
 
     function initSelectOptions() {
       const select = document.getElementById('card-select');
@@ -207,7 +176,13 @@
       currentIndex = idx;
       const card = thothDeck[idx];
       document.getElementById('card-select').value = idx;
-      document.getElementById('card-img').src = getProxiedUrl(card.img);
+      
+      const imgEl = document.getElementById('card-img');
+      imgEl.src = card.img;
+      imgEl.onerror = function() {
+        this.src = "https://images.weserv.nl/?url=raw.githubusercontent.com/Comics/Thoth/main/0.jpg";
+      };
+
       document.getElementById('card-atu').innerText = `Atu ${card.id}`;
       document.getElementById('card-title').innerText = card.name;
       document.getElementById('card-alias').innerText = `«${card.alias}»`;
@@ -274,7 +249,7 @@
         cardEl.className = "bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex flex-col items-center text-center space-y-3 shadow-xl backdrop-blur-sm";
         cardEl.innerHTML = `
           <span class="text-xs font-mono text-amber-400/90 font-semibold uppercase tracking-wider">Carta ${idx + 1}</span>
-          <img src="${getProxiedUrl(card.img)}" referrerpolicy="no-referrer" alt="${card.name}" class="h-64 object-contain rounded-xl border border-slate-800 my-1 shadow-2xl">
+          <img src="${card.img}" alt="${card.name}" class="h-64 object-contain rounded-xl border border-slate-800 my-1 shadow-2xl">
           <div>
             <h3 class="font-bold text-slate-100 text-base">${card.name}</h3>
             <p class="text-xs text-amber-400 font-mono mt-0.5">${card.letter} | ${card.astro}</p>
@@ -289,14 +264,13 @@
       const container = document.getElementById('view-grid');
       container.innerHTML = thothDeck.map((card, idx) => `
         <div onclick="setMode('gallery'); renderCardDetails(${idx});" class="bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-amber-500/50 p-2.5 rounded-2xl flex flex-col items-center cursor-pointer transition text-center group">
-          <img src="${getProxiedUrl(card.img)}" referrerpolicy="no-referrer" alt="${card.name}" class="h-36 object-contain rounded-lg mb-2 group-hover:scale-105 transition">
+          <img src="${card.img}" alt="${card.name}" class="h-36 object-contain rounded-lg mb-2 group-hover:scale-105 transition">
           <span class="text-[10px] font-mono text-amber-400/80 uppercase">Atu ${card.id}</span>
           <span class="text-xs font-bold text-slate-200 line-clamp-1">${card.name}</span>
         </div>
       `).join('');
     }
 
-    // Teclas de dirección para navegar
     document.addEventListener('keydown', (e) => {
       if (!document.getElementById('view-gallery').classList.contains('hidden')) {
         if (e.key === 'ArrowRight') nextCard();
@@ -304,7 +278,6 @@
       }
     });
 
-    // Inicialización
     initSelectOptions();
     renderCardDetails(0);
   </script>
