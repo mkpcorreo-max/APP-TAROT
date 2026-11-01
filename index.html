@@ -65,7 +65,6 @@
 
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6 bg-slate-900/40 border border-slate-800 p-6 rounded-3xl w-full max-w-4xl shadow-2xl backdrop-blur-sm">
         <div id="img-container" class="md:col-span-5 flex flex-col items-center justify-center p-2 bg-slate-950/60 rounded-2xl border border-slate-800/60 min-h-[380px]">
-          <!-- Imagen o SVG de respaldo -->
         </div>
 
         <div class="md:col-span-7 flex flex-col justify-between space-y-4">
@@ -157,20 +156,20 @@
     let currentIndex = 0;
 
     function getFallbackSvg(card) {
-      return `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 500" class="w-full h-auto max-h-[380px] rounded-xl shadow-2xl border border-amber-500/40">
-          <rect width="300" height="500" fill="#090d16" rx="12"/>
-          <rect x="12" y="12" width="276" height="476" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="6,3" rx="8"/>
-          <circle cx="150" cy="210" r="80" fill="#1e1b4b" stroke="#fef08a" stroke-width="1.5"/>
-          <polygon points="150,140 170,190 220,190 180,220 195,270 150,240 105,270 120,220 80,190 130,190" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
-          <text x="150" y="218" font-family="serif" font-size="32" fill="#fef08a" text-anchor="middle" font-weight="bold">${card.letter.split(' ')[0]}</text>
-          <text x="150" y="340" font-family="sans-serif" font-size="14" fill="#fbbf24" text-anchor="middle" font-weight="bold" letter-spacing="2">ATU ${card.id}</text>
-          <text x="150" y="370" font-family="sans-serif" font-size="16" fill="#f8fafc" text-anchor="middle" font-weight="bold">${card.name.split('. ')[1]}</text>
-          <text x="150" y="395" font-family="sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle" font-style="italic">${card.alias}</text>
-          <rect x="40" y="420" width="220" height="30" fill="#0f172a" rx="6" stroke="#334155"/>
-          <text x="150" y="440" font-family="monospace" font-size="11" fill="#f59e0b" text-anchor="middle">${card.astro}</text>
-        </svg>
-      `;
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 500" class="w-full h-auto max-h-[380px] rounded-xl shadow-2xl border border-amber-500/40"><rect width="300" height="500" fill="#090d16" rx="12"/><rect x="12" y="12" width="276" height="476" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="6,3" rx="8"/><circle cx="150" cy="210" r="80" fill="#1e1b4b" stroke="#fef08a" stroke-width="1.5"/><polygon points="150,140 170,190 220,190 180,220 195,270 150,240 105,270 120,220 80,190 130,190" fill="none" stroke="#f59e0b" stroke-width="1.5"/><text x="150" y="218" font-family="serif" font-size="32" fill="#fef08a" text-anchor="middle" font-weight="bold">${card.letter.split(' ')[0]}</text><text x="150" y="340" font-family="sans-serif" font-size="14" fill="#fbbf24" text-anchor="middle" font-weight="bold" letter-spacing="2">ATU ${card.id}</text><text x="150" y="370" font-family="sans-serif" font-size="16" fill="#f8fafc" text-anchor="middle" font-weight="bold">${card.name.split('. ')[1]}</text><text x="150" y="395" font-family="sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle" font-style="italic">${card.alias}</text><rect x="40" y="420" width="220" height="30" fill="#0f172a" rx="6" stroke="#334155"/><text x="150" y="440" font-family="monospace" font-size="11" fill="#f59e0b" text-anchor="middle">${card.astro}</text></svg>`;
+    }
+
+    function handleImageError(imgEl, idx) {
+      const card = thothDeck[idx];
+      if (!imgEl.dataset.triedSecondary) {
+        imgEl.dataset.triedSecondary = "true";
+        imgEl.src = `https://images.weserv.nl/?url=${encodeURIComponent(card.img)}&output=jpg`;
+      } else {
+        const parent = imgEl.parentElement;
+        if (parent) {
+          parent.innerHTML = getFallbackSvg(card);
+        }
+      }
     }
 
     function initSelectOptions() {
@@ -186,11 +185,7 @@
       document.getElementById('card-select').value = idx;
       
       const container = document.getElementById('img-container');
-      const proxiedUrl = `https://corsproxy.io/?${encodeURIComponent(card.img)}`;
-      
-      container.innerHTML = `
-        <img id="card-img" src="${proxiedUrl}" alt="${card.name}" class="max-h-[380px] w-auto object-contain rounded-xl shadow-2xl transition-all duration-300" onerror="this.outerHTML=\`${getFallbackSvg(card)}\`"/>
-      `;
+      container.innerHTML = `<img id="card-img" src="${card.img}" alt="${card.name}" referrerpolicy="no-referrer" class="max-h-[380px] w-auto object-contain rounded-xl shadow-2xl transition-all duration-300" onclick="this.src=this.src" onerror="handleImageError(this, ${idx})">`;
 
       document.getElementById('card-atu').innerText = `Atu ${card.id}`;
       document.getElementById('card-title').innerText = card.name;
@@ -254,13 +249,13 @@
       const shuffled = [...thothDeck].sort(() => Math.random() - 0.5).slice(0, count);
 
       shuffled.forEach((card, idx) => {
+        const cardIndexInDeck = thothDeck.findIndex(c => c.id === card.id);
         const cardEl = document.createElement('div');
         cardEl.className = "bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex flex-col items-center text-center space-y-3 shadow-xl backdrop-blur-sm";
-        const proxiedUrl = `https://corsproxy.io/?${encodeURIComponent(card.img)}`;
         cardEl.innerHTML = `
           <span class="text-xs font-mono text-amber-400/90 font-semibold uppercase tracking-wider">Carta ${idx + 1}</span>
-          <div class="h-64 flex items-center justify-center my-1">
-            <img src="${proxiedUrl}" alt="${card.name}" class="h-64 object-contain rounded-xl border border-slate-800 shadow-2xl" onerror="this.outerHTML=\`${getFallbackSvg(card)}\`"/>
+          <div class="h-64 flex items-center justify-center my-1 w-full">
+            <img src="${card.img}" alt="${card.name}" referrerpolicy="no-referrer" class="h-64 object-contain rounded-xl border border-slate-800 shadow-2xl" onerror="handleImageError(this, ${cardIndexInDeck})">
           </div>
           <div>
             <h3 class="font-bold text-slate-100 text-base">${card.name}</h3>
@@ -274,20 +269,17 @@
 
     function renderGrid() {
       const container = document.getElementById('view-grid');
-      container.innerHTML = thothDeck.map((card, idx) => {
-        const proxiedUrl = `https://corsproxy.io/?${encodeURIComponent(card.img)}`;
-        return `
-          <div onclick="setMode('gallery'); renderCardDetails(${idx});" class="bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-amber-500/50 p-2.5 rounded-2xl flex flex-col items-center cursor-pointer transition text-center group min-h-[180px] justify-between">
-            <div class="h-32 flex items-center justify-center">
-              <img src="${proxiedUrl}" alt="${card.name}" class="h-32 object-contain rounded-lg group-hover:scale-105 transition" onerror="this.outerHTML=\`${getFallbackSvg(card)}\`"/>
-            </div>
-            <div>
-              <span class="text-[10px] font-mono text-amber-400/80 uppercase block">Atu ${card.id}</span>
-              <span class="text-xs font-bold text-slate-200 line-clamp-1">${card.name}</span>
-            </div>
+      container.innerHTML = thothDeck.map((card, idx) => `
+        <div onclick="setMode('gallery'); renderCardDetails(${idx});" class="bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-amber-500/50 p-2.5 rounded-2xl flex flex-col items-center cursor-pointer transition text-center group min-h-[180px] justify-between">
+          <div class="h-32 flex items-center justify-center w-full">
+            <img src="${card.img}" alt="${card.name}" referrerpolicy="no-referrer" class="h-32 object-contain rounded-lg group-hover:scale-105 transition" onerror="handleImageError(this, ${idx})">
           </div>
-        `;
-      }).join('');
+          <div>
+            <span class="text-[10px] font-mono text-amber-400/80 uppercase block">Atu ${card.id}</span>
+            <span class="text-xs font-bold text-slate-200 line-clamp-1">${card.name}</span>
+          </div>
+        </div>
+      `).join('');
     }
 
     document.addEventListener('keydown', (e) => {
