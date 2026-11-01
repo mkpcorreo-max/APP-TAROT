@@ -1,0 +1,55 @@
+name: Descarga Automatica de Imagenes Tarot
+
+on:
+  push:
+    paths:
+      - '.github/workflows/download.yml'
+  workflow_dispatch:
+
+jobs:
+  download-images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Obtener codigo del repositorio
+        uses: actions/checkout@v4
+
+      - name: Descargar imagenes en carpeta img
+        run: |
+          mkdir -p img
+          urls=(
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/00_Fool.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/01_Magus.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/02_Priestess.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/03_Empress.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/04_Emperor.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/05_Hierophant.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/06_Lovers.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/07_Chariot.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/08_Adjustment.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/09_Hermit.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/10_Fortune.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/11_Lust.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/12_Hanged_Man.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/13_Death.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/14_Art.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/15_Devil.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/16_Tower.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/17_Star.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/18_Moon.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/19_Sun.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/20_Aeon.jpg"
+            "https://ia800501.us.archive.org/21/items/thoth-tarot-deck/21_Universe.jpg"
+          )
+          for i in "${!urls[@]}"; do
+            curl -s -L "${urls[$i]}" -o "img/$i.jpg"
+          done
+
+      - name: Guardar imagenes en el repositorio
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.io"
+          git add img/
+          git commit -m "Añadir automaticamente imagenes de cartas" || exit 0
+          git push
